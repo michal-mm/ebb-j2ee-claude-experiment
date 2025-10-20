@@ -15,6 +15,16 @@ calculator-ejb/
 │           │   └── CalculatorBean.java
 │           └── client/
 │               └── CalculatorClient.java
+├── test/
+│   └── com/
+│       └── calculator/
+│           └── ejb/
+│               ├── CalculatorBeanTest.java
+│               ├── CalculatorIntegrationTest.java
+│               └── CalculatorTestSuite.java
+├── lib/
+│   ├── junit-4.11.jar
+│   └── hamcrest-core-1.3.jar
 ├── META-INF/
 │   ├── ejb-jar.xml
 │   └── jboss.xml
@@ -30,19 +40,27 @@ calculator-ejb/
 - **ejb-jar.xml** - Standard EJB deployment descriptor
 - **jboss.xml** - JBoss-specific deployment descriptor with JNDI bindings
 - **CalculatorClient.java** - Test client to invoke the EJB
-- **build.xml** - Ant build script for compilation and packaging
+- **CalculatorBeanTest.java** - JUnit 4 unit tests for bean logic
+- **CalculatorIntegrationTest.java** - Integration tests requiring running JBoss
+- **CalculatorTestSuite.java** - Test suite to run all tests
+- **build.xml** - Ant build script for compilation, packaging, and testing
 
 ## Prerequisites
 
 - JDK 6 or higher
 - JBoss Application Server (AS 5.x, 6.x, or 7.x)
 - Apache Ant (for building)
+- JUnit 4.11 and Hamcrest Core 1.3 (for testing)
 
 ## Building the Application
 
-1. Update the `jboss.home` property in `build.xml` to point to your JBoss installation
+1. Download required test libraries and place them in the `lib/` directory:
+   - junit-4.11.jar
+   - hamcrest-core-1.3.jar
 
-2. Compile and package:
+2. Update the `jboss.home` property in `build.xml` to point to your JBoss installation
+
+3. Compile and package:
 ```bash
 ant clean package
 ```
@@ -88,6 +106,49 @@ Testing Calculator EJB...
 All operations completed successfully!
 ```
 
+## Running Unit Tests
+
+Unit tests test the business logic without requiring a running JBoss server:
+
+```bash
+ant test-unit
+```
+
+This will run all unit tests in `CalculatorBeanTest.java` which include:
+- Addition tests (positive, negative, zero, decimals)
+- Subtraction tests
+- Multiplication tests
+- Division tests
+- Division by zero exception handling
+- Edge cases and boundary conditions
+
+## Running Integration Tests
+
+Integration tests require a running JBoss server with the EJB deployed:
+
+1. Make sure JBoss is running with the Calculator EJB deployed
+2. Run integration tests:
+
+```bash
+ant test-integration
+```
+
+This will test:
+- Remote EJB invocations
+- JNDI lookups
+- Stateless session bean behavior
+- Multiple concurrent calls
+
+## Running All Tests
+
+To run both unit and integration tests:
+
+```bash
+ant test-all
+```
+
+Test reports (XML format) will be generated in the `test-reports/` directory.
+
 ## API Operations
 
 The Calculator EJB exposes four operations:
@@ -108,6 +169,8 @@ The Calculator EJB exposes four operations:
 - The bean is stateless and uses container-managed transactions
 - Compatible with Java EE 6 specification
 - Division by zero throws a RemoteException
+- Unit tests use JUnit 4 (compatible with Java EE 6)
+- Integration tests require JBoss to be running
 
 ## Troubleshooting
 
