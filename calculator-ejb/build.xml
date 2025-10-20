@@ -2,6 +2,7 @@
 <project name="CalculatorEJB" default="package" basedir=".">
     
     <property name="src.dir" value="src"/>
+    <property name="web.dir" value="web"/>
     <property name="test.dir" value="test"/>
     <property name="build.dir" value="build"/>
     <property name="test.build.dir" value="build-test"/>
@@ -17,6 +18,10 @@
             <include name="jboss-ejb-client.jar"/>
             <include name="jboss-ejb3-ext-api.jar"/>
             <include name="javaee.jar"/>
+        </fileset>
+        <fileset dir="${jboss.home}/lib">
+            <include name="servlet-api.jar"/>
+            <include name="jsp-api.jar"/>
         </fileset>
     </path>
     
@@ -49,7 +54,7 @@
     <target name="package" depends="compile">
         <jar destfile="${dist.dir}/calculator-ejb.jar">
             <fileset dir="${build.dir}">
-                <include name="**/*.class"/>
+                <include name="**/ejb/*.class"/>
             </fileset>
             <metainf dir="META-INF">
                 <include name="ejb-jar.xml"/>
@@ -57,6 +62,34 @@
             </metainf>
         </jar>
     </target>
+    
+    <target name="package-war" depends="compile" description="Package web application as WAR">
+        <war destfile="${dist.dir}/calculator-web.war" webxml="${web.dir}/WEB-INF/web.xml">
+            <classes dir="${build.dir}">
+                <include name="**/web/*.class"/>
+            </classes>
+            <fileset dir="${web.dir}">
+                <include name="**/*.jsp"/>
+                <include name="**/*.html"/>
+                <include name="**/*.css"/>
+                <include name="**/*.js"/>
+            </fileset>
+            <lib dir="${dist.dir}">
+                <include name="calculator-ejb.jar"/>
+            </lib>
+        </war>
+    </target>
+    
+    <target name="package-ear" depends="package,package-war" description="Package as EAR file">
+        <ear destfile="${dist.dir}/calculator.ear" appxml="${web.dir}/META-INF/application.xml">
+            <fileset dir="${dist.dir}">
+                <include name="calculator-ejb.jar"/>
+                <include name="calculator-web.war"/>
+            </fileset>
+        </ear>
+    </target>
+    
+    <target name="package-all" depends="package-ear" description="Package everything"/>
     
     <target name="clean">
         <delete dir="${build.dir}"/>
