@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ejb-jar xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+         http://java.sun.com/xml/ns/javaee/ejb-jar_3_1.xsd"
+         version="3.1">
+    
+    <display-name>Calculator EJB</display-name>
+    
+    <enterprise-beans>
+        <session>
+            <ejb-name>CalculatorEJB</ejb-name>
+            <home>com.calculator.ejb.CalculatorHome</home>
+            <remote>com.calculator.ejb.CalculatorRemote</remote>
+            <ejb-class>com.calculator.ejb.CalculatorBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+        </session>
+    </enterprise-beans>
+    
+</ejb-jar>
